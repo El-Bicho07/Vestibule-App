@@ -10,10 +10,13 @@ import {
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import * as Haptics from "expo-haptics";
+import { Search, X } from "lucide-react-native";
 import { useBlocklistStore } from "../store/useBlocklistStore";
 import { useSessionStore } from "../store/useSessionStore";
 import { useThemeStore } from "../store/useThemeStore";
 import { getColors, radius } from "../constants/theme";
+import { AppIcon } from "../components/AppIcon";
+import { PlatformBlockingCard } from "../components/PlatformBlockingCard";
 
 type Filter = "all" | "blocked";
 
@@ -72,33 +75,52 @@ export const BlocklistScreen: React.FC = () => {
             color: c.text,
             letterSpacing: -0.6,
             lineHeight: 36,
-            marginBottom: 24,
+            marginBottom: 8,
           }}
         >
-          Decide who waits outside{"\n"}
-          <Text style={{ color: c.subtext, fontSize: 16, fontWeight: "400", letterSpacing: 0 }}>
-            {blockedCount} of {apps.length} apps blocked at the door
-          </Text>
+          Decide who waits outside
+        </Text>
+        <Text style={{ color: c.subtext, fontSize: 15, marginBottom: 24 }}>
+          {blockedCount} of {apps.length} apps blocked at the door
         </Text>
 
+        {/* Platform blocking upgrade */}
+        <PlatformBlockingCard />
+
         {/* Search */}
-        <TextInput
-          testID="blocklist-search"
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Search apps"
-          placeholderTextColor={c.subtext}
+        <View
           style={{
+            flexDirection: "row",
+            alignItems: "center",
             borderWidth: 1,
             borderColor: c.border,
             borderRadius: radius.md,
-            padding: 14,
-            fontSize: 15,
-            color: c.text,
+            paddingHorizontal: 14,
             backgroundColor: c.surface,
             marginBottom: 14,
           }}
-        />
+        >
+          <Search size={16} color={c.subtext} strokeWidth={1.6} />
+          <TextInput
+            testID="blocklist-search"
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search apps"
+            placeholderTextColor={c.subtext}
+            style={{
+              flex: 1,
+              paddingVertical: 14,
+              paddingHorizontal: 10,
+              fontSize: 15,
+              color: c.text,
+            }}
+          />
+          {query.length > 0 && (
+            <Pressable testID="clear-search" onPress={() => setQuery("")} hitSlop={8}>
+              <X size={16} color={c.subtext} strokeWidth={1.6} />
+            </Pressable>
+          )}
+        </View>
 
         {/* Filter chips */}
         <View style={{ flexDirection: "row", marginBottom: 20 }}>
@@ -125,7 +147,6 @@ export const BlocklistScreen: React.FC = () => {
                   fontSize: 13,
                   fontWeight: "600",
                   color: filter === f ? c.background : c.text,
-                  textTransform: "capitalize",
                 }}
               >
                 {f === "all" ? "All" : "Blocked only"}
@@ -135,7 +156,7 @@ export const BlocklistScreen: React.FC = () => {
         </View>
 
         {/* List */}
-        <View style={{ gap: 2 }}>
+        <View>
           {filtered.map((app, idx) => (
             <Animatable.View
               key={app.id}
@@ -154,18 +175,8 @@ export const BlocklistScreen: React.FC = () => {
                 marginBottom: 8,
               }}
             >
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  backgroundColor: c.background,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 14,
-                }}
-              >
-                <Text style={{ fontSize: 20 }}>{app.icon}</Text>
+              <View style={{ marginRight: 14 }}>
+                <AppIcon name={app.name} blocked={app.blocked} size={40} testID={`icon-${app.id}`} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 15, fontWeight: "500", color: c.text }}>{app.name}</Text>

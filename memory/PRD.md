@@ -55,15 +55,25 @@ All in `src/constants/theme.ts`.
 - **Chart library**: spec requested Victory Native. We shipped a custom SVG bar chart in `src/components/Chart.tsx` (same dependency tree uses `react-native-svg`, which Victory depends on anyway). Reason: Victory Native v41 requires `@shopify/react-native-skia` and is heavier than the design warrants. The custom chart matches the architectural tone better (thin primary bars, accent for peak day) and keeps the dep surface small. API contract of `buildWeeklyChart` is unchanged and can be swapped back in one file.
 
 ## Status
-- 26 TypeScript files, all compile clean under `tsc --noEmit` (strict).
+- 28 TypeScript files, all compile clean under `tsc --noEmit` (strict).
 - No backend, no auth, no network. Fully offline via AsyncStorage.
 - **This is a native mobile app.** It runs on iOS / Android via `yarn start` + Expo Go, not in the web preview container.
 
+## Recent enhancements (v1.1)
+1. **Button motion refined** — per-variant spring (primary firmer at 0.96 / bounciness 2, secondary softer at 0.975, ghost subtlest at 0.985), parallel opacity-to-0.92 on press for material depth, `haptic="auto"` differentiates (primary=Medium, secondary=Light, danger=Warning-notification, ghost=selection).
+2. **Monochrome SVG icon system** — added `lucide-react-native` for UI icons (Sun/Moon theme toggle, Search/X in blocklist, Shield/Check on platform card, ShieldCheck on session verified badge, ChevronRight/Sparkles). Emoji app icons replaced by a custom `AppIcon` monogram-tile component (initials in Courier; fills with `c.text` when blocked for high-contrast architectural look).
+3. **Real platform-blocking integration** (honest for managed Expo):
+   - **iOS**: `PlatformBlockingCard` deep-links to `App-Prefs:com.apple.focus` (with Settings-root fallback) + `shortcuts://`. User confirms "I've set it up" → `iosFocusLinked` persists. Suggested wiring: a Shortcut named "Enter Vestibule" that turns on a Vestibule Focus mode.
+   - **Android**: uses `expo-intent-launcher` → `ACTION_USAGE_ACCESS_SETTINGS`. User grants access, confirms → `androidUsageAccessGranted` persists.
+   - **Session screen**: when linked, distraction counter carries a "Verified" pill (ShieldCheck + accent) indicating counts are OS-backed, not heuristic.
+   - Disconnect flow with destructive confirmation.
+
 ## Data test IDs
 - `theme-toggle-btn`, `streak-badge`, `duration-chip-{25|45|60|custom}`, `custom-duration-input`, `enter-vestibule-btn`, `session-label-input`, `strict-mode-switch`, `confirm-enter-btn`
-- `session-screen`, `session-timer`, `session-label`, `distraction-count`, `rotating-quote`, `leave-vestibule-btn`
+- `session-screen`, `session-timer`, `session-label`, `distraction-count`, `verified-badge`, `rotating-quote`, `leave-vestibule-btn`
 - `friction-modal`, `friction-math-input`, `friction-submit-btn`, `friction-stay-btn`, `friction-leave-btn`
-- `blocklist-search`, `filter-{all|blocked}`, `toggle-{appId}`
+- `platform-blocking-card`, `platform-connect-btn`, `platform-unlink-btn`, `platform-help-btn`, `open-shortcuts-btn`
+- `blocklist-search`, `clear-search`, `filter-{all|blocked}`, `toggle-{appId}`, `icon-{appId}`
 - `weekly-chart`, `most-blocked-card`, `insight-{id}`, `insight-cta-{id}`
 - `complete-screen`, `complete-distractions`, `enter-again-btn`, `go-home-btn`
 - `abandon-screen`, `abandon-elapsed`, `start-reset-btn`, `restart-btn`

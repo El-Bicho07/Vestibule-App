@@ -4,11 +4,14 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as Haptics from "expo-haptics";
 import * as Animatable from "react-native-animatable";
+import { Platform } from "react-native";
+import { ShieldCheck } from "lucide-react-native";
 import { Timer } from "../components/Timer";
 import { Button } from "../components/Button";
 import { FrictionModal } from "../components/FrictionModal";
 import { useSessionStore } from "../store/useSessionStore";
 import { useStatsStore } from "../store/useStatsStore";
+import { useBlocklistStore } from "../store/useBlocklistStore";
 import { useThemeStore } from "../store/useThemeStore";
 import { getColors } from "../constants/theme";
 import { QUOTES } from "../constants/quotes";
@@ -33,6 +36,9 @@ export const SessionScreen: React.FC = () => {
     abandonSession,
   } = useSessionStore();
   const { addSession } = useStatsStore();
+  const { iosFocusLinked, androidUsageAccessGranted } = useBlocklistStore();
+  const verifiedBlocking =
+    Platform.OS === "ios" ? iosFocusLinked : Platform.OS === "android" ? androidUsageAccessGranted : false;
 
   const [remaining, setRemaining] = useState(duration);
   const [quoteIndex, setQuoteIndex] = useState(() => Math.floor(Math.random() * QUOTES.length));
@@ -189,12 +195,43 @@ export const SessionScreen: React.FC = () => {
 
         {/* Distraction counter */}
         <View style={{ alignItems: "center", marginBottom: 20 }}>
-          <Text style={{ fontSize: 13, color: c.subtext }}>
-            <Text style={{ color: c.text, fontWeight: "600" }} testID="distraction-count">
-              {distractionsBlocked}
-            </Text>{" "}
-            distraction{distractionsBlocked === 1 ? "" : "s"} turned away
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ fontSize: 13, color: c.subtext }}>
+              <Text style={{ color: c.text, fontWeight: "600" }} testID="distraction-count">
+                {distractionsBlocked}
+              </Text>{" "}
+              distraction{distractionsBlocked === 1 ? "" : "s"} turned away
+            </Text>
+            {verifiedBlocking && (
+              <View
+                testID="verified-badge"
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 8,
+                  paddingHorizontal: 8,
+                  paddingVertical: 3,
+                  borderRadius: 99,
+                  borderWidth: 1,
+                  borderColor: c.accent,
+                }}
+              >
+                <ShieldCheck size={11} color={c.accent} strokeWidth={2} />
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: c.accent,
+                    fontWeight: "700",
+                    letterSpacing: 0.8,
+                    textTransform: "uppercase",
+                    marginLeft: 4,
+                  }}
+                >
+                  Verified
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* Rotating quote */}

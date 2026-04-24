@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as Haptics from "expo-haptics";
 import * as Animatable from "react-native-animatable";
+import { Sun, Moon } from "lucide-react-native";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { StreakBadge } from "../components/StreakBadge";
@@ -116,7 +117,11 @@ export const HomeScreen: React.FC = () => {
               justifyContent: "center",
             }}
           >
-            <Text style={{ fontSize: 14 }}>{theme === "light" ? "☾" : "☀"}</Text>
+            {theme === "light" ? (
+              <Moon size={14} color={c.text} strokeWidth={1.5} />
+            ) : (
+              <Sun size={14} color={c.text} strokeWidth={1.5} />
+            )}
           </Pressable>
         </View>
 

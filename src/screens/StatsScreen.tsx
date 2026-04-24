@@ -11,6 +11,7 @@ import { useThemeStore } from "../store/useThemeStore";
 import { getColors, radius } from "../constants/theme";
 import { buildWeeklyChart, generateInsights } from "../utils/insights";
 import { formatDuration } from "../utils/time";
+import { AppIcon } from "../components/AppIcon";
 
 export const StatsScreen: React.FC = () => {
   const { theme } = useThemeStore();
@@ -88,12 +89,15 @@ export const StatsScreen: React.FC = () => {
         {mostBlocked && (
           <View style={{ marginTop: 12 }}>
             <Card padding={16} testID="most-blocked-card">
-              <Text style={{ fontSize: 12, letterSpacing: 1.4, textTransform: "uppercase", color: c.subtext, marginBottom: 6, fontWeight: "600" }}>
+              <Text style={{ fontSize: 12, letterSpacing: 1.4, textTransform: "uppercase", color: c.subtext, marginBottom: 10, fontWeight: "600" }}>
                 Most common at the door
               </Text>
-              <Text style={{ fontSize: 18, color: c.text, fontWeight: "500" }}>
-                {mostBlocked.icon}  {mostBlocked.name}
-              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <AppIcon name={mostBlocked.name} blocked size={36} />
+                <Text style={{ fontSize: 18, color: c.text, fontWeight: "500", marginLeft: 12 }}>
+                  {mostBlocked.name}
+                </Text>
+              </View>
             </Card>
           </View>
         )}

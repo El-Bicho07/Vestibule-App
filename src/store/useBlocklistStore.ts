@@ -12,8 +12,12 @@ export interface BlockedApp {
 
 interface BlocklistState {
   apps: BlockedApp[];
+  iosFocusLinked: boolean;
+  androidUsageAccessGranted: boolean;
   toggleApp: (id: string) => void;
   setBlocked: (id: string, blocked: boolean) => void;
+  setIosFocusLinked: (linked: boolean) => void;
+  setAndroidUsageAccessGranted: (granted: boolean) => void;
   reset: () => void;
 }
 
@@ -23,6 +27,8 @@ export const useBlocklistStore = create<BlocklistState>()(
   persist(
     (set) => ({
       apps: initialApps,
+      iosFocusLinked: false,
+      androidUsageAccessGranted: false,
 
       toggleApp: (id) =>
         set((s) => ({
@@ -34,7 +40,16 @@ export const useBlocklistStore = create<BlocklistState>()(
           apps: s.apps.map((a) => (a.id === id ? { ...a, blocked } : a)),
         })),
 
-      reset: () => set({ apps: initialApps }),
+      setIosFocusLinked: (linked) => set({ iosFocusLinked: linked }),
+      setAndroidUsageAccessGranted: (granted) =>
+        set({ androidUsageAccessGranted: granted }),
+
+      reset: () =>
+        set({
+          apps: initialApps,
+          iosFocusLinked: false,
+          androidUsageAccessGranted: false,
+        }),
     }),
     {
       name: "vestibule-blocklist",
