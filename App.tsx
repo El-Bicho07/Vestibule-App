@@ -1,10 +1,8 @@
-import "./global.css";
-import React, { useEffect } from "react";
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useColorScheme } from "nativewind";
 import { View } from "react-native";
 import { RootNavigator } from "./src/navigation/RootNavigator";
 import { useThemeStore } from "./src/store/useThemeStore";
@@ -12,12 +10,7 @@ import { getColors } from "./src/constants/theme";
 
 export default function App() {
   const { theme } = useThemeStore();
-  const { setColorScheme } = useColorScheme();
   const c = getColors(theme);
-
-  useEffect(() => {
-    setColorScheme(theme);
-  }, [theme, setColorScheme]);
 
   const navTheme =
     theme === "dark"
