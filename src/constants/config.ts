@@ -12,6 +12,10 @@ export const DEFAULT_LABEL = "Deep work";
 
 export const ABANDON_GRACE_SECONDS = 0;
 
+// First 60 seconds of a session: no haptics, no chrome animation, no
+// distraction counting. The user just arrives.
+export const SESSION_GRACE_SECONDS = 60;
+
 export const MOCK_APPS = [
   { id: "instagram", name: "Instagram", icon: "📷", blocked: true },
   { id: "tiktok", name: "TikTok", icon: "🎵", blocked: true },

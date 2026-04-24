@@ -68,6 +68,9 @@ All in `src/constants/theme.ts`.
    - **Session screen**: when linked, distraction counter carries a "Verified" pill (ShieldCheck + accent) indicating counts are OS-backed, not heuristic.
    - Disconnect flow with destructive confirmation.
 
+## Recent enhancements (v1.2)
+4. **Grace window** — first `SESSION_GRACE_SECONDS` (60s) of every session is silent: rotating quote suppressed (shows an "Arriving" marker instead), distraction counter dimmed (opacity 0.35), distraction AppState tick suppressed, "Verified" pill hidden. Timer runs normally. Implemented derivatively from `startTime` (no new store state); flipped exactly once via `inGraceRef` in the countdown interval so the handler captures the latest value without re-subscribing the AppState listener.
+
 ## Data test IDs
 - `theme-toggle-btn`, `streak-badge`, `duration-chip-{25|45|60|custom}`, `custom-duration-input`, `enter-vestibule-btn`, `session-label-input`, `strict-mode-switch`, `confirm-enter-btn`
 - `session-screen`, `session-timer`, `session-label`, `distraction-count`, `verified-badge`, `rotating-quote`, `leave-vestibule-btn`

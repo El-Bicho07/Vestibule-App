@@ -15,7 +15,7 @@ import { useBlocklistStore } from "../store/useBlocklistStore";
 import { useThemeStore } from "../store/useThemeStore";
 import { getColors } from "../constants/theme";
 import { QUOTES } from "../constants/quotes";
-import { QUOTE_ROTATION_MS } from "../constants/config";
+import { QUOTE_ROTATION_MS, SESSION_GRACE_SECONDS } from "../constants/config";
 import type { RootStackParamList } from "../navigation/RootNavigator";
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -43,8 +43,10 @@ export const SessionScreen: React.FC = () => {
   const [remaining, setRemaining] = useState(duration);
   const [quoteIndex, setQuoteIndex] = useState(() => Math.floor(Math.random() * QUOTES.length));
   const [frictionVisible, setFrictionVisible] = useState(false);
+  const [inGrace, setInGrace] = useState(true);
   const backgroundedAt = useRef<number | null>(null);
   const finishedRef = useRef(false);
+  const inGraceRef = useRef(true);
 
   // Countdown
   useEffect(() => {
@@ -52,6 +54,13 @@ export const SessionScreen: React.FC = () => {
     const interval = setInterval(() => {
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
       const left = duration - elapsed;
+
+      // Flip grace off exactly once when the window closes.
+      if (inGraceRef.current && elapsed >= SESSION_GRACE_SECONDS) {
+        inGraceRef.current = false;
+        setInGrace(false);
+      }
+
       if (left <= 0 && !finishedRef.current) {
         finishedRef.current = true;
         setRemaining(0);
@@ -76,22 +85,24 @@ export const SessionScreen: React.FC = () => {
     return () => clearInterval(interval);
   }, [startTime, duration, completeSession, addSession, navigation, label, strictMode]);
 
-  // Rotate quotes
+  // Rotate quotes (paused during grace)
   useEffect(() => {
+    if (inGrace) return;
     const t = setInterval(() => {
       setQuoteIndex((i) => (i + 1) % QUOTES.length);
     }, QUOTE_ROTATION_MS);
     return () => clearInterval(t);
-  }, []);
+  }, [inGrace]);
 
-  // Count "distractions turned away" when app goes to background and returns
+  // Count "distractions turned away" when app goes to background and returns.
+  // Suppressed entirely during the grace window.
   useEffect(() => {
     const sub = AppState.addEventListener("change", (next: AppStateStatus) => {
       if (next === "background" || next === "inactive") {
         backgroundedAt.current = Date.now();
       } else if (next === "active" && backgroundedAt.current) {
         const away = Date.now() - backgroundedAt.current;
-        if (away > 2000) {
+        if (away > 2000 && !inGraceRef.current) {
           tickDistraction();
           Haptics.selectionAsync();
         }
@@ -193,8 +204,8 @@ export const SessionScreen: React.FC = () => {
           </Text>
         </View>
 
-        {/* Distraction counter */}
-        <View style={{ alignItems: "center", marginBottom: 20 }}>
+        {/* Distraction counter (dimmed during grace) */}
+        <View style={{ alignItems: "center", marginBottom: 20, opacity: inGrace ? 0.35 : 1 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={{ fontSize: 13, color: c.subtext }}>
               <Text style={{ color: c.text, fontWeight: "600" }} testID="distraction-count">
@@ -202,7 +213,7 @@ export const SessionScreen: React.FC = () => {
               </Text>{" "}
               distraction{distractionsBlocked === 1 ? "" : "s"} turned away
             </Text>
-            {verifiedBlocking && (
+            {verifiedBlocking && !inGrace && (
               <View
                 testID="verified-badge"
                 style={{
@@ -234,19 +245,43 @@ export const SessionScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Rotating quote */}
-        <Animatable.View
-          key={quoteIndex}
-          animation="fadeIn"
-          duration={800}
-          style={{
-            paddingHorizontal: 12,
-            marginBottom: 24,
-            minHeight: 50,
-            justifyContent: "center",
-          }}
-        >
-          <Text
+        {/* Grace marker OR rotating quote */}
+        {inGrace ? (
+          <View
+            testID="grace-marker"
+            style={{
+              paddingHorizontal: 12,
+              marginBottom: 24,
+              minHeight: 50,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                letterSpacing: 2.5,
+                textTransform: "uppercase",
+                color: c.subtext,
+                fontWeight: "500",
+              }}
+            >
+              Arriving
+            </Text>
+          </View>
+        ) : (
+          <Animatable.View
+            key={quoteIndex}
+            animation="fadeIn"
+            duration={800}
+            style={{
+              paddingHorizontal: 12,
+              marginBottom: 24,
+              minHeight: 50,
+              justifyContent: "center",
+            }}
+          >
+            <Text
             style={{
               fontSize: 14,
               color: c.subtext,
@@ -259,6 +294,7 @@ export const SessionScreen: React.FC = () => {
             “{QUOTES[quoteIndex]}”
           </Text>
         </Animatable.View>
+        )}
 
         <Button
           testID="leave-vestibule-btn"
