@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F5F2EC"
+      "backgroundColor": "#12110F"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -21,7 +21,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#F5F2EC"
+        "backgroundColor": "#12110F"
       },
       "package": "com.vestibule.app"
     },
