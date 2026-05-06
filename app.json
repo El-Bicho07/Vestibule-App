@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#F5F2EC"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vestibule.app"
@@ -26,6 +28,12 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": []
+    "plugins": [],
+    "extra": {
+      "eas": {
+        "projectId": "15ede584-adcc-4d71-956b-47e3bf587093"
+      }
+    },
+    "owner": "sjs-studio"
   }
 }
