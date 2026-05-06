@@ -20,7 +20,8 @@
     "expo-intent-launcher": "~11.0.1",
     "expo-linking": "~6.3.1",
     "expo-status-bar": "~1.12.1",
-    "lucide-react-native": "^1.11.0",
+    "lucide-react-native": "1.11.0",
+    "nativewind": "^4.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
@@ -36,7 +37,21 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.79",
+    "tailwindcss": "^4.2.4",
     "typescript": "~5.3.3"
   },
-  "private": true
+  "private": true,
+  "description": "A minimal offline-only focus session app built with Expo and React Native",
+  "keywords": [
+    "focus",
+    "productivity",
+    "pomodoro",
+    "react-native",
+    "expo"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/El-Bicho07/Vestibule-App.git"
+  },
+  "author": "Suryakumar J S"
 }

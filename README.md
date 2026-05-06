@@ -19,14 +19,14 @@ A production-ready, offline-only focus session app built with Expo + React Nativ
 yarn install
 
 # Start the Metro bundler
-yarn start
+npx expo start
 
 # Or go directly to a platform
 yarn ios        # iOS simulator (macOS only)
 yarn android    # Android emulator / device
 ```
 
-Open the QR code in **Expo Go** on your device, or press `i` / `a` in the terminal to launch a simulator.
+Open the QR code in **expo-dev-client / development build** on your device, or press `i` / `a` in the terminal to launch a simulator.
 
 ## Project structure
 
@@ -68,7 +68,7 @@ No backend. No auth. No ads. Everything persists via `@react-native-async-storag
 
 ## Notes for running
 
-This app targets iOS / Android via Expo Go (SDK 51) or a development build. It is not intended to run in a web browser — the minimal, full-screen mobile layouts and native haptics are the point.
+This app targets iOS / Android via expo-dev-client / development build (SDK 51). It is not intended to run in a web browser — the minimal, full-screen mobile layouts and native haptics are the point.
 
 ---
 

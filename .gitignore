@@ -22,3 +22,7 @@ credentials.json
 *.p12
 *.mobileprovision
 *.orig.*
+
+# Emergent AI memory
+memory/
+.emergent/
