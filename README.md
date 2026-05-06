@@ -32,10 +32,10 @@ Open the QR code in **expo-dev-client / development build** on your device, or p
 
 ```
 /src
-  /components      Button · Card · Timer · Chart · FrictionModal · StreakBadge
+  /components      Button · Card · Timer · Chart · FrictionModal · StreakBadge · AppIcon · PlatformBlockingCard
   /screens         Home · Session · Blocklist · Stats · Complete · Abandon
   /store           session · blocklist · stats · theme  (Zustand + AsyncStorage)
-  /utils           time · insights · mathGenerator
+  /utils           time · insights · mathGenerator · platformBlocking
   /constants       theme · config · quotes
   /navigation      RootNavigator · TabNavigator
 App.tsx
@@ -43,12 +43,13 @@ App.tsx
 
 ## Features
 
-- **Home** — tagline, streak, last session, 25/45/60/Custom duration chips, bottom sheet for label + strict mode
+- **Home** — tagline, streak, animated theme toggle, last session, 25/45/60/Custom duration chips, bottom sheet for label + strict mode
 - **Session** — full-screen timer, label, "distractions turned away" counter (auto-increments on app background → foreground), rotating quotes, Leave button → friction modal
 - **Friction Modal**
   - Strict OFF: soft warning "Leaving early won't count toward your streak."
   - Strict ON: 2-step math problem, wrong answer shakes + regenerates, haptic error
 - **Blocklist** ("At The Door") — search, All/Blocked filter, instant toggles, inline toast if session is active
+- **Platform Integrations** — Deep-links to iOS Focus and Shortcuts for automation, or Android Usage Access for accurate background disruption counting.
 - **Stats** ("Time Inside") — weekly bar chart with peak highlight, Insight → Meaning → Action cards, totals, most-blocked app
 - **Complete** — duration, label, distractions, streak update, milestone badge (3 / 7 / 21 / 60)
 - **Abandon** — elapsed time, "The door is always open.", 5m Reset / Restart / Go Home
