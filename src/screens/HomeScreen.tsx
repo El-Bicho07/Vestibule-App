@@ -10,6 +10,9 @@ import {
   Switch,
   KeyboardAvoidingView,
   Platform,
+  Animated,
+  Easing,
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -28,12 +31,21 @@ import { DURATION_CHIPS, DEFAULT_LABEL } from "../constants/config";
 import { formatDuration, formatRelative } from "../utils/time";
 import type { RootStackParamList } from "../navigation/RootNavigator";
 
+const { width, height } = Dimensions.get("window");
+const RIPPLE_MAX_RADIUS = Math.sqrt(width * width + height * height);
+const RIPPLE_SIZE = 100;
+const MAX_SCALE = RIPPLE_MAX_RADIUS / (RIPPLE_SIZE / 2);
+
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const { theme, toggle } = useThemeStore();
   const c = getColors(theme);
+
+  const [rippleTarget, setRippleTarget] = useState<"light" | "dark" | null>(null);
+  const rippleScale = React.useRef(new Animated.Value(0)).current;
+  const rippleOpacity = React.useRef(new Animated.Value(1)).current;
 
   const { configureSession, startSession } = useSessionStore();
   const { apps } = useBlocklistStore();
@@ -82,8 +94,61 @@ export const HomeScreen: React.FC = () => {
     navigation.navigate("Session");
   };
 
+  const handleToggleTheme = () => {
+    Haptics.selectionAsync();
+    
+    if (rippleTarget) return; // Prevent double taps during animation
+    
+    const nextTheme = theme === "light" ? "dark" : "light";
+    setRippleTarget(nextTheme);
+    rippleScale.setValue(0);
+    rippleOpacity.setValue(1);
+
+    Animated.timing(rippleScale, {
+      toValue: 1,
+      duration: 500,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: true,
+    }).start(() => {
+      toggle();
+      
+      Animated.timing(rippleOpacity, {
+        toValue: 0,
+        duration: 250,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      }).start(() => {
+        setRippleTarget(null);
+      });
+    });
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.background }}>
+      {rippleTarget && (
+        <Animated.View
+          style={{
+            position: "absolute",
+            top: 34 - RIPPLE_SIZE / 2,
+            right: 42 - RIPPLE_SIZE / 2,
+            width: RIPPLE_SIZE,
+            height: RIPPLE_SIZE,
+            borderRadius: RIPPLE_SIZE / 2,
+            backgroundColor: getColors(rippleTarget).background,
+            transform: [
+              {
+                scale: rippleScale.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, MAX_SCALE],
+                }),
+              },
+            ],
+            opacity: rippleOpacity,
+            zIndex: 9999,
+            pointerEvents: "none",
+          }}
+        />
+      )}
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
@@ -103,10 +168,7 @@ export const HomeScreen: React.FC = () => {
           </Text>
           <Pressable
             testID="theme-toggle-btn"
-            onPress={() => {
-              Haptics.selectionAsync();
-              toggle();
-            }}
+            onPress={handleToggleTheme}
             style={{
               width: 36,
               height: 36,
