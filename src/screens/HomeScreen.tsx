@@ -12,7 +12,7 @@ import {
   Platform,
   Animated,
   Easing,
-  Dimensions,
+  useWindowDimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -31,10 +31,7 @@ import { DURATION_CHIPS, DEFAULT_LABEL } from "../constants/config";
 import { formatDuration, formatRelative } from "../utils/time";
 import type { RootStackParamList } from "../navigation/RootNavigator";
 
-const { width, height } = Dimensions.get("window");
-const RIPPLE_MAX_RADIUS = Math.sqrt(width * width + height * height);
 const RIPPLE_SIZE = 100;
-const MAX_SCALE = RIPPLE_MAX_RADIUS / (RIPPLE_SIZE / 2);
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -42,6 +39,9 @@ export const HomeScreen: React.FC = () => {
   const navigation = useNavigation<Nav>();
   const { theme, toggle } = useThemeStore();
   const c = getColors(theme);
+  const { width, height } = useWindowDimensions();
+  const RIPPLE_MAX_RADIUS = Math.sqrt(width * width + height * height);
+  const MAX_SCALE = RIPPLE_MAX_RADIUS / (RIPPLE_SIZE / 2);
 
   const [rippleTarget, setRippleTarget] = useState<"light" | "dark" | null>(null);
   const rippleScale = React.useRef(new Animated.Value(0)).current;

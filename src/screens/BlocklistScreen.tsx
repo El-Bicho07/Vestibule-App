@@ -176,7 +176,7 @@ export const BlocklistScreen: React.FC = () => {
               }}
             >
               <View style={{ marginRight: 14 }}>
-                <AppIcon name={app.name} blocked={app.blocked} size={40} testID={`icon-${app.id}`} />
+                <AppIcon name={app.name} icon={app.icon} blocked={app.blocked} size={40} testID={`icon-${app.id}`} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 15, fontWeight: "500", color: c.text }}>{app.name}</Text>

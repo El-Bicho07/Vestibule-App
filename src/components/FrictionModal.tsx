@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   View,
@@ -64,7 +64,7 @@ export const FrictionModal: React.FC<FrictionModalProps> = ({
     }
   };
 
-  const content = useMemo(() => {
+  const renderContent = () => {
     if (strictMode) {
       return (
         <>
@@ -189,8 +189,7 @@ export const FrictionModal: React.FC<FrictionModalProps> = ({
         />
       </>
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [strictMode, problem, input, error, c, theme]);
+  };
 
   return (
     <Modal
@@ -219,7 +218,7 @@ export const FrictionModal: React.FC<FrictionModalProps> = ({
             borderColor: c.border,
           }}
         >
-          {content}
+          {renderContent()}
         </Animatable.View>
       </KeyboardAvoidingView>
     </Modal>

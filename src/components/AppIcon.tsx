@@ -5,6 +5,7 @@ import { getColors, radius } from "../constants/theme";
 
 interface AppIconProps {
   name: string;
+  icon?: string;
   blocked: boolean;
   size?: number;
   testID?: string;
@@ -19,7 +20,7 @@ const getInitials = (name: string): string => {
   return (parts[0][0] + parts[1][0]).toUpperCase();
 };
 
-export const AppIcon: React.FC<AppIconProps> = ({ name, blocked, size = 40, testID }) => {
+export const AppIcon: React.FC<AppIconProps> = ({ name, icon, blocked, size = 40, testID }) => {
   const { theme } = useThemeStore();
   const c = getColors(theme);
   const initials = getInitials(name);
@@ -51,7 +52,7 @@ export const AppIcon: React.FC<AppIconProps> = ({ name, blocked, size = 40, test
           fontFamily: "Courier",
         }}
       >
-        {initials}
+        {icon || initials}
       </Text>
     </View>
   );

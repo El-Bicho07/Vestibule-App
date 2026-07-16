@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, useWindowDimensions } from "react-native";
 import Svg, { Rect, Text as SvgText, Line } from "react-native-svg";
 import { useThemeStore } from "../store/useThemeStore";
 import { getColors } from "../constants/theme";
@@ -15,8 +15,9 @@ interface ChartProps {
 export const Chart: React.FC<ChartProps> = ({ data, height = 200, testID }) => {
   const { theme } = useThemeStore();
   const c = getColors(theme);
+  const { width } = useWindowDimensions();
 
-  const screenWidth = Dimensions.get("window").width - 48;
+  const screenWidth = width - 48;
   const chartWidth = screenWidth;
   const chartHeight = height;
   const barAreaHeight = chartHeight - 28;
