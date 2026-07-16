@@ -93,7 +93,7 @@ export const StatsScreen: React.FC = () => {
                 Most common at the door
               </Text>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <AppIcon name={mostBlocked.name} blocked size={36} />
+                <AppIcon name={mostBlocked.name} icon={mostBlocked.icon} blocked size={36} />
                 <Text style={{ fontSize: 18, color: c.text, fontWeight: "500", marginLeft: 12 }}>
                   {mostBlocked.name}
                 </Text>
