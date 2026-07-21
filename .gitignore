@@ -26,3 +26,8 @@ credentials.json
 # Emergent AI memory
 memory/
 .emergent/
+
+# Local configuration and lock files
+.gitconfig
+package-lock.json
+
